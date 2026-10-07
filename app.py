@@ -44,15 +44,15 @@ class DataAnalyzer:
 
     def plot_bivariate_num_cat(self, num_col, cat_col):
         """Genera un boxplot para comparar una variable numérica vs categórica."""
-        fig, ax = plt.subplots(figsize=(8, 4))
+        fig, ax = plt.subplots(figsize=(10, 6))
         sns.boxplot(data=self.df, x=cat_col, y=num_col, palette='Set2', ax=ax)
         plt.xticks(rotation=45)
         ax.set_title(f'{num_col} vs {cat_col}')
         return fig
 
     def plot_bivariate_cat_cat(self, cat_col1, cat_col2):
-        """Genera un gráfico de barras apiladas o agrupadas para dos categóricas."""
-        fig, ax = plt.subplots(figsize=(8, 4))
+        """Genera un gráfico de barras agrupadas para dos categóricas."""
+        fig, ax = plt.subplots(figsize=(12, 6))
         sns.countplot(data=self.df, x=cat_col1, hue=cat_col2, palette='coolwarm', ax=ax)
         plt.xticks(rotation=45)
         ax.set_title(f'{cat_col1} vs {cat_col2}')
@@ -69,7 +69,6 @@ st.set_page_config(page_title="EDA - Bank Marketing", layout="wide", page_icon="
 st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2830/2830284.png", width=100)
 st.sidebar.title("Navegación")
 
-# Solo dos módulos en el menú lateral
 menu = st.sidebar.radio("Seleccione un Módulo:", 
                         ["🏠 Home", 
                          "📂 Carga y Análisis (EDA)"])
@@ -112,7 +111,7 @@ if menu == "🏠 Home":
 # ==========================================
 elif menu == "📂 Carga y Análisis (EDA)":
     st.title("📂 Carga de Datos y EDA")
-    st.write("Sube el archivo `BankMarketing.csv` para desplegar automáticamente el Análisis Exploratorio.")
+    st.write("Sube el archivo `BankMarketing.csv` para desplegar el Análisis Exploratorio.")
     
     uploaded_file = st.file_uploader("Selecciona el archivo CSV", type=["csv"])
     
@@ -125,7 +124,6 @@ elif menu == "📂 Carga y Análisis (EDA)":
                 
             st.success("✅ Archivo cargado correctamente.")
             
-            # Vista previa colapsable para ahorrar espacio visual
             with st.expander("Ver vista previa y dimensiones del dataset", expanded=False):
                 st.info(f"El dataset contiene **{df.shape[0]} filas** y **{df.shape[1]} columnas**.")
                 st.dataframe(df.head())
@@ -133,14 +131,12 @@ elif menu == "📂 Carga y Análisis (EDA)":
             st.markdown("---")
             st.title("📊 Análisis Exploratorio de Datos (EDA)")
             
-            # Instanciar clase POO
             analyzer = DataAnalyzer(df)
             
-            # Uso de TABS: Agregamos la pestaña 11 para las conclusiones
             tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11 = st.tabs([
-                "1. Info", "2. Clasificación", "3. Estadísticas", "4. Nulos", 
-                "5. Dist. Numéricas", "6. Dist. Categóricas", "7. Bivariado (Num vs Cat)", 
-                "8. Bivariado (Cat vs Cat)", "9. Filtros Dinámicos", "10. Hallazgos", "11. Conclusiones"
+                "1. Info", "2. Clasif.", "3. Estadísticas", "4. Nulos", 
+                "5. Dist. Num", "6. Dist. Cat", "7. Num vs Cat", 
+                "8. Cat vs Cat", "9. Filtros", "10. Correlación", "11. Conclusiones"
             ])
 
             # Ítem 1: Información general
@@ -154,147 +150,138 @@ elif menu == "📂 Carga y Análisis (EDA)":
                     st.subheader("Resumen (.info)")
                     buffer = io.StringIO()
                     df.info(buf=buffer)
-                    s = buffer.getvalue()
-                    st.text(s)
+                    st.text(buffer.getvalue())
 
             # Ítem 2: Clasificación de variables
             with tab2:
                 st.header("Ítem 2: Clasificación de Variables")
-                st.write("Identificación usando la clase personalizada `DataAnalyzer`.")
                 col1, col2 = st.columns(2)
                 with col1:
                     st.success(f"**Variables Numéricas ({len(analyzer.num_cols)}):**")
-                    for col in analyzer.num_cols:
-                        st.write(f"- {col}")
+                    st.write(", ".join(analyzer.num_cols))
                 with col2:
                     st.info(f"**Variables Categóricas ({len(analyzer.cat_cols)}):**")
-                    for col in analyzer.cat_cols:
-                        st.write(f"- {col}")
+                    st.write(", ".join(analyzer.cat_cols))
 
             # Ítem 3: Estadísticas descriptivas
             with tab3:
                 st.header("Ítem 3: Estadísticas Descriptivas")
                 st.dataframe(analyzer.get_descriptive_stats())
-                st.markdown("""
-                **Interpretación Básica:**
-                - Se utiliza `mean` (media) y `50%` (mediana) para evaluar el centro de los datos. 
-                - Si hay una gran diferencia entre media y mediana (ej. `duration`), indica que la distribución está sesgada (asimetría).
-                - `std` (Desviación estándar) indica la dispersión de los datos respecto a la media.
+                st.info("""
+                **Interpretación de la Tabla:**
+                - **Edad (`age`):** La edad media de los clientes contactados es de 40 años, con un mínimo de 17 y un máximo de 98 años[cite: 10].
+                - **Duración (`duration`):** Presenta una asimetría fuerte. El 75% de las llamadas dura 319 segundos o menos, pero el valor máximo alcanza los 4918 segundos, indicando la presencia de valores atípicos (llamadas inusualmente largas)[cite: 10].
+                - **Contactos (`campaign`):** En promedio se han realizado 2.5 contactos por cliente durante esta campaña[cite: 10].
                 """)
 
             # Ítem 4: Valores faltantes
             with tab4:
                 st.header("Ítem 4: Análisis de Valores Faltantes")
                 nulls = analyzer.get_missing_values()
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.write("**Conteo de Nulos por Columna:**")
-                    if nulls.sum() > 0:
-                        st.dataframe(nulls[nulls > 0])
-                    else:
-                        st.success("No se encontraron valores nulos.")
-                with col2:
-                    if nulls.sum() > 0:
-                        fig, ax = plt.subplots()
-                        sns.heatmap(df.isnull(), cbar=False, cmap='viridis', ax=ax)
-                        st.pyplot(fig)
-                    else:
-                        st.success("El dataset está limpio, no requiere imputación de datos nulos en primera instancia.")
+                if nulls.sum() > 0:
+                    st.dataframe(nulls[nulls > 0])
+                else:
+                    st.success("El dataset está limpio, no se encontraron valores nulos (missing values).")
 
             # Ítem 5: Distribución de variables numéricas
             with tab5:
                 st.header("Ítem 5: Distribución Numérica")
-                num_sel = st.selectbox("Seleccione la variable numérica:", analyzer.num_cols, key="num_hist")
-                bins = st.slider("Número de Bins para el Histograma", min_value=10, max_value=100, value=30)
-                if num_sel:
-                    st.pyplot(analyzer.plot_histogram(num_sel, bins))
-                    st.write(f"Interpretación: Observamos la concentración de los clientes respecto a su **{num_sel}**.")
+                num_sel = st.selectbox("Seleccione la variable numérica:", analyzer.num_cols, index=0)
+                bins = st.slider("Número de Bins", min_value=10, max_value=100, value=30)
+                st.pyplot(analyzer.plot_histogram(num_sel, bins))
+                
+                if num_sel == 'age':
+                    st.warning("""
+                    **Interpretación del Gráfico (Distribución de age):**
+                    La distribución tiene forma de campana pero con un claro sesgo hacia la derecha (cola larga). La gran mayoría de los clientes contactados se concentran entre los **30 y 40 años**[cite: 11]. El volumen de llamadas disminuye drásticamente a partir de los 60 años[cite: 11].
+                    """)
 
             # Ítem 6: Análisis de variables categóricas
             with tab6:
                 st.header("Ítem 6: Análisis de Variables Categóricas")
-                cat_sel = st.selectbox("Seleccione la variable categórica:", analyzer.cat_cols, key="cat_bar")
-                if cat_sel:
-                    st.pyplot(analyzer.plot_bar(cat_sel))
-                    proporciones = df[cat_sel].value_counts(normalize=True) * 100
-                    st.write("**Proporciones (%)**")
-                    st.dataframe(proporciones.round(2))
+                cat_sel = st.selectbox("Seleccione la variable categórica:", analyzer.cat_cols, index=analyzer.cat_cols.index('job') if 'job' in analyzer.cat_cols else 0)
+                st.pyplot(analyzer.plot_bar(cat_sel))
+                
+                if cat_sel == 'job':
+                    st.warning("""
+                    **Interpretación del Gráfico (Frecuencia de job):**
+                    Las profesiones más contactadas por el banco son los perfiles **administrativos (`admin.`)**, seguidos de los trabajadores manuales (`blue-collar`) y los técnicos (`technician`)[cite: 12]. En contraste, los estudiantes y desempleados representan la porción más pequeña de la base de datos[cite: 12].
+                    """)
 
             # Ítem 7: Análisis Bivariado (Numérico vs Categórico)
             with tab7:
                 st.header("Ítem 7: Numérico vs Categórico")
                 col_num = st.selectbox("Eje Y (Numérica):", analyzer.num_cols, index=analyzer.num_cols.index('age') if 'age' in analyzer.num_cols else 0)
-                col_cat = st.selectbox("Eje X (Categórica - ej. Target 'y'):", analyzer.cat_cols, index=analyzer.cat_cols.index('y') if 'y' in analyzer.cat_cols else 0)
+                col_cat = st.selectbox("Eje X (Categórica):", analyzer.cat_cols, index=analyzer.cat_cols.index('y') if 'y' in analyzer.cat_cols else 0)
                 st.pyplot(analyzer.plot_bivariate_num_cat(col_num, col_cat))
-                st.write(f"Evalúa cómo varía la distribución de **{col_num}** dependiendo de la categoría en **{col_cat}**.")
+                
+                if col_num == 'age' and col_cat == 'y':
+                    st.warning("""
+                    **Interpretación del Gráfico (age vs y):**
+                    Las cajas (cuartiles) de las personas que aceptaron (`yes`) y rechazaron (`no`) la oferta son bastante similares en su tendencia central[cite: 13]. Sin embargo, se observa una notable concentración de **valores atípicos (outliers) en edades avanzadas (70 a casi 100 años)** dentro del grupo que sí aceptó el depósito (`yes`)[cite: 13], sugiriendo que la tercera edad podría tener una mayor predisposición a la conversión.
+                    """)
 
             # Ítem 8: Análisis Bivariado (Categórico vs Categórico)
             with tab8:
                 st.header("Ítem 8: Categórico vs Categórico")
-                cat_1 = st.selectbox("Variable Principal (Eje X):", analyzer.cat_cols, index=analyzer.cat_cols.index('job') if 'job' in analyzer.cat_cols else 0)
-                cat_2 = st.selectbox("Variable de Agrupación (Color - ej. 'y'):", analyzer.cat_cols, index=analyzer.cat_cols.index('y') if 'y' in analyzer.cat_cols else 0)
+                cat_1 = st.selectbox("Eje X:", analyzer.cat_cols, index=analyzer.cat_cols.index('job') if 'job' in analyzer.cat_cols else 0)
+                cat_2 = st.selectbox("Color (hue):", analyzer.cat_cols, index=analyzer.cat_cols.index('y') if 'y' in analyzer.cat_cols else 0)
                 st.pyplot(analyzer.plot_bivariate_cat_cat(cat_1, cat_2))
+                
+                if cat_1 == 'job' and cat_2 == 'y':
+                    st.warning("""
+                    **Interpretación del Gráfico (job vs y):**
+                    Aunque la categoría `admin.` tiene el mayor volumen absoluto de aceptaciones (`yes`), las barras reflejan que grupos como **los jubilados (`retired`) y los estudiantes (`student`)** tienen una proporción de éxito mucho mejor comparada con sus rechazos (`no`)[cite: 14]. Por otro lado, los trabajadores `blue-collar` presentan una de las tasas de rechazo proporcionalmente más altas[cite: 14].
+                    """)
 
             # Ítem 9: Análisis dinámico / Filtros
             with tab9:
-                st.header("Ítem 9: Análisis Dinámico Basado en Parámetros")
-                st.write("Usa los widgets para filtrar y visualizar el dataset dinámicamente.")
-                selected_cols = st.multiselect("Seleccione las columnas a visualizar:", df.columns.tolist(), default=['age', 'job', 'marital', 'y'])
-                
+                st.header("Ítem 9: Filtros Dinámicos")
+                selected_cols = st.multiselect("Columnas a visualizar:", df.columns.tolist(), default=['age', 'job', 'marital', 'y'])
                 if 'age' in df.columns:
-                    age_range = st.slider("Filtro por Edad", int(df['age'].min()), int(df['age'].max()), (30, 50))
-                else:
-                    age_range = None
-                    
-                solo_exitosos = st.checkbox("Mostrar solo campañas exitosas (y = 'yes')")
+                    age_range = st.slider("Filtro Edad", int(df['age'].min()), int(df['age'].max()), (30, 50))
+                solo_exitosos = st.checkbox("Solo exitosos (y='yes')")
                 
                 filtered_df = df.copy()
-                if age_range:
+                if 'age' in df.columns:
                     filtered_df = filtered_df[(filtered_df['age'] >= age_range[0]) & (filtered_df['age'] <= age_range[1])]
                 if solo_exitosos and 'y' in df.columns:
                     filtered_df = filtered_df[filtered_df['y'] == 'yes']
                     
-                st.write(f"Mostrando {len(filtered_df)} registros después de aplicar los filtros.")
+                st.write(f"Mostrando {len(filtered_df)} registros.")
                 st.dataframe(filtered_df[selected_cols].head(100))
 
-            # Ítem 10: Hallazgos clave
+            # Ítem 10: Matriz de Correlación
             with tab10:
-                st.header("Ítem 10: Hallazgos Clave")
-                st.write("Visualización Resumen - Matriz de Correlación")
-                fig, ax = plt.subplots(figsize=(10, 6))
+                st.header("Ítem 10: Matriz de Correlación")
+                fig, ax = plt.subplots(figsize=(12, 8))
                 sns.heatmap(df[analyzer.num_cols].corr(), annot=True, cmap='coolwarm', fmt=".2f", ax=ax)
                 st.pyplot(fig)
-                st.markdown("""
-                ### 💡 Insights Principales:
-                1. **Impacto de la Duración**: La variable `duration` suele tener la mayor correlación con el éxito de la campaña. Sin embargo, no es un buen predictor para modelos futuros porque solo se conoce al finalizar la llamada.
-                2. **Factores Macroeconómicos**: Las tasas de empleo (`emp.var.rate`) y el Euribor (`euribor3m`) influyen en el comportamiento conservador del cliente ante los depósitos.
-                3. **Perfil Demográfico**: Ciertos trabajos (ej. jubilados o estudiantes) pueden mostrar tasas de aceptación proporcionalmente mayores.
+                st.warning("""
+                **Interpretación del Gráfico (Correlaciones):**
+                Se evidencia una **fuerte multicolinealidad** entre las variables macroeconómicas. El indicador de empleo (`emp.var.rate`), la tasa Euribor (`euribor3m`) y el número de empleados (`nr.employed`) presentan correlaciones positivas altísimas entre sí (superiores a 0.90)[cite: 15]. Esto indica que el contexto económico global del país en el momento de la llamada se mueve en bloque e influye directamente en el comportamiento financiero del cliente[cite: 15].
                 """)
 
-            # Ítem 11: Conclusiones (Nueva Pestaña)
+            # Ítem 11: Conclusiones
             with tab11:
                 st.header("Ítem 11: Conclusiones para la Toma de Decisiones")
                 st.markdown("""
-                En base al Análisis Exploratorio de Datos realizado sobre la caída de efectividad de las campañas comerciales (del 12% al 8%), se extraen las siguientes **5 conclusiones orientadas al negocio**:
+                Con base en las interpretaciones de los datos visualizados para abordar la caída de la efectividad comercial, se presentan las siguientes conclusiones estratégicas:
 
-                1. **Redirección de Esfuerzos por Perfil (Targeting):** 
-                   Se observa que grupos poblacionales específicos (por ejemplo, personas en etapa de jubilación o con ciertos perfiles profesionales) tienen una tasa de conversión superior. El equipo de ventas debe priorizar estas bolsas de clientes en lugar de realizar llamadas masivas aleatorias.
-                   
-                2. **Optimización del Canal y Tiempo de Contacto:** 
-                   Los datos sugieren que meses específicos o días de la semana rinden mejor. Se debe reprogramar el calendario de los agentes comerciales para intensificar los contactos durante los picos históricos de mayor aceptación y reducir esfuerzo en meses de baja conversión.
-                   
-                3. **La Duración del Contacto como Indicador de Calidad:** 
-                   Las llamadas exitosas muestran una duración media sustancialmente mayor. Se debe capacitar a los ejecutivos comerciales en habilidades blandas y "rompehielos" que logren retener al cliente en la línea los primeros 60 segundos vitales, en lugar de intentar forzar un cierre rápido.
-                   
-                4. **Adaptación a las Condiciones Macroeconómicas:** 
-                   Variables como la tasa de empleo o el índice de precios muestran una influencia clara. El banco debe ajustar su guion de ventas (pitch comercial) de los productos a plazo fijo, destacándolos como un "refugio seguro" ante momentos de alta incertidumbre económica.
-                   
-                5. **Control de la Frecuencia (Fatiga del Cliente):** 
-                   La variable de contactos durante la misma campaña (`campaign`) indica que insistir repetidas veces a un mismo cliente genera rendimientos decrecientes y potencial rechazo. Se debe establecer una política estricta de máximo de contactos por campaña para evitar la fatiga del cliente y optimizar el tiempo del agente comercial.
+                1. **Micro-Segmentación Rentable (Targeting Demográfico):**
+                   Los datos demuestran que el banco gasta muchos recursos llamando a trabajadores manuales (`blue-collar`), quienes tienen un volumen alto de rechazo[cite: 12, 14]. Por otro lado, las personas de la tercera edad (70+ años) y jubilados (`retired`), así como estudiantes, tienen proporciones de aceptación mucho más altas[cite: 13, 14]. **Acción:** Redirigir el esfuerzo de llamadas masivas hacia nichos específicos como jubilados que buscan seguridad financiera.
+
+                2. **Calidad de la Llamada sobre la Cantidad:**
+                   La enorme dispersión en la duración de la llamada (hasta 4918 segundos) indica que las interacciones exitosas requieren retener al usuario[cite: 10]. **Acción:** Capacitar a los asesores para no forzar cierres rápidos en el primer minuto, sino entablar una conversación consultiva, ya que una mayor duración está ligada al éxito.
+
+                3. **Impacto del Entorno Macroeconómico:**
+                   La altísima correlación entre el Euribor, las tasas de variación de empleo y los índices de precios (>0.90) confirma que el cliente reacciona en bloque al contexto económico[cite: 15]. **Acción:** Adaptar el discurso de venta dinámicamente; si el Euribor está a la baja, el depósito a plazo debe venderse como un "refugio preventivo" antes de que las tasas caigan más.
+
+                4. **El Desafío de la Edad Central:**
+                   El grueso de las llamadas (la gran masa entre 30 y 40 años) coincide con la base laboral activa (`admin.`, `technician`)[cite: 11, 12]. Aunque aportan en volumen absoluto, su tasa de conversión está estancada. **Acción:** Para este grupo, el producto clásico de depósito no es atractivo. Se deben diseñar campañas cruzadas ofreciendo flexibilidades o tasas diferenciadas para recuperar el porcentaje perdido en este segmento poblacional.
                 """)
-                st.info("📌 **Nota:** Este dashboard fue diseñado aplicando principios de limpieza visual, modularidad (POO) y componentes dinámicos requeridos para el portafolio profesional.")
 
         except Exception as e:
             st.error(f"Error al procesar el archivo: {e}")
     else:
-        st.info("👆 Esperando la carga del archivo CSV para desplegar el análisis estadístico.")
+        st.info("👆 Esperando la carga del archivo CSV para desplegar el análisis.")
