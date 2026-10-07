@@ -169,9 +169,9 @@ elif menu == "📂 Carga y Análisis (EDA)":
                 st.dataframe(analyzer.get_descriptive_stats())
                 st.info("""
                 **Interpretación de la Tabla:**
-                - **Edad (`age`):** La edad media de los clientes contactados es de 40 años, con un mínimo de 17 y un máximo de 98 años[cite: 10].
-                - **Duración (`duration`):** Presenta una asimetría fuerte. El 75% de las llamadas dura 319 segundos o menos, pero el valor máximo alcanza los 4918 segundos, indicando la presencia de valores atípicos (llamadas inusualmente largas)[cite: 10].
-                - **Contactos (`campaign`):** En promedio se han realizado 2.5 contactos por cliente durante esta campaña[cite: 10].
+                - **Edad (`age`):** La edad media de los clientes contactados es de 40 años, con un mínimo de 17 y un máximo de 98 años.
+                - **Duración (`duration`):** Presenta una asimetría fuerte. El 75% de las llamadas dura 319 segundos o menos, pero el valor máximo alcanza los 4918 segundos, indicando la presencia de valores atípicos (llamadas inusualmente largas).
+                - **Contactos (`campaign`):** En promedio se han realizado 2.5 contactos por cliente durante esta campaña.
                 """)
 
             # Ítem 4: Valores faltantes
@@ -193,7 +193,7 @@ elif menu == "📂 Carga y Análisis (EDA)":
                 if num_sel == 'age':
                     st.warning("""
                     **Interpretación del Gráfico (Distribución de age):**
-                    La distribución tiene forma de campana pero con un claro sesgo hacia la derecha (cola larga). La gran mayoría de los clientes contactados se concentran entre los **30 y 40 años**[cite: 11]. El volumen de llamadas disminuye drásticamente a partir de los 60 años[cite: 11].
+                    La distribución tiene forma de campana pero con un claro sesgo hacia la derecha (cola larga). La gran mayoría de los clientes contactados se concentran entre los **30 y 40 años**. El volumen de llamadas disminuye drásticamente a partir de los 60 años.
                     """)
 
             # Ítem 6: Análisis de variables categóricas
@@ -205,7 +205,7 @@ elif menu == "📂 Carga y Análisis (EDA)":
                 if cat_sel == 'job':
                     st.warning("""
                     **Interpretación del Gráfico (Frecuencia de job):**
-                    Las profesiones más contactadas por el banco son los perfiles **administrativos (`admin.`)**, seguidos de los trabajadores manuales (`blue-collar`) y los técnicos (`technician`)[cite: 12]. En contraste, los estudiantes y desempleados representan la porción más pequeña de la base de datos[cite: 12].
+                    Las profesiones más contactadas por el banco son los perfiles **administrativos (`admin.`)**, seguidos de los trabajadores manuales (`blue-collar`) y los técnicos (`technician`). En contraste, los estudiantes y desempleados representan la porción más pequeña de la base de datos.
                     """)
 
             # Ítem 7: Análisis Bivariado (Numérico vs Categórico)
@@ -218,7 +218,7 @@ elif menu == "📂 Carga y Análisis (EDA)":
                 if col_num == 'age' and col_cat == 'y':
                     st.warning("""
                     **Interpretación del Gráfico (age vs y):**
-                    Las cajas (cuartiles) de las personas que aceptaron (`yes`) y rechazaron (`no`) la oferta son bastante similares en su tendencia central[cite: 13]. Sin embargo, se observa una notable concentración de **valores atípicos (outliers) en edades avanzadas (70 a casi 100 años)** dentro del grupo que sí aceptó el depósito (`yes`)[cite: 13], sugiriendo que la tercera edad podría tener una mayor predisposición a la conversión.
+                    Las cajas (cuartiles) de las personas que aceptaron (`yes`) y rechazaron (`no`) la oferta son bastante similares en su tendencia central. Sin embargo, se observa una notable concentración de **valores atípicos (outliers) en edades avanzadas (70 a casi 100 años)** dentro del grupo que sí aceptó el depósito (`yes`), sugiriendo que la tercera edad podría tener una mayor predisposición a la conversión.
                     """)
 
             # Ítem 8: Análisis Bivariado (Categórico vs Categórico)
@@ -231,7 +231,7 @@ elif menu == "📂 Carga y Análisis (EDA)":
                 if cat_1 == 'job' and cat_2 == 'y':
                     st.warning("""
                     **Interpretación del Gráfico (job vs y):**
-                    Aunque la categoría `admin.` tiene el mayor volumen absoluto de aceptaciones (`yes`), las barras reflejan que grupos como **los jubilados (`retired`) y los estudiantes (`student`)** tienen una proporción de éxito mucho mejor comparada con sus rechazos (`no`)[cite: 14]. Por otro lado, los trabajadores `blue-collar` presentan una de las tasas de rechazo proporcionalmente más altas[cite: 14].
+                    Aunque la categoría `admin.` tiene el mayor volumen absoluto de aceptaciones (`yes`), las barras reflejan que grupos como **los jubilados (`retired`) y los estudiantes (`student`)** tienen una proporción de éxito mucho mejor comparada con sus rechazos (`no`). Por otro lado, los trabajadores `blue-collar` presentan una de las tasas de rechazo proporcionalmente más altas.
                     """)
 
             # Ítem 9: Análisis dinámico / Filtros
@@ -259,7 +259,7 @@ elif menu == "📂 Carga y Análisis (EDA)":
                 st.pyplot(fig)
                 st.warning("""
                 **Interpretación del Gráfico (Correlaciones):**
-                Se evidencia una **fuerte multicolinealidad** entre las variables macroeconómicas. El indicador de empleo (`emp.var.rate`), la tasa Euribor (`euribor3m`) y el número de empleados (`nr.employed`) presentan correlaciones positivas altísimas entre sí (superiores a 0.90)[cite: 15]. Esto indica que el contexto económico global del país en el momento de la llamada se mueve en bloque e influye directamente en el comportamiento financiero del cliente[cite: 15].
+                Se evidencia una **fuerte multicolinealidad** entre las variables macroeconómicas. El indicador de empleo (`emp.var.rate`), la tasa Euribor (`euribor3m`) y el número de empleados (`nr.employed`) presentan correlaciones positivas altísimas entre sí (superiores a 0.90). Esto indica que el contexto económico global del país en el momento de la llamada se mueve en bloque e influye directamente en el comportamiento financiero del cliente.
                 """)
 
             # Ítem 11: Conclusiones
@@ -269,16 +269,16 @@ elif menu == "📂 Carga y Análisis (EDA)":
                 Con base en las interpretaciones de los datos visualizados para abordar la caída de la efectividad comercial, se presentan las siguientes conclusiones estratégicas:
 
                 1. **Micro-Segmentación Rentable (Targeting Demográfico):**
-                   Los datos demuestran que el banco gasta muchos recursos llamando a trabajadores manuales (`blue-collar`), quienes tienen un volumen alto de rechazo[cite: 12, 14]. Por otro lado, las personas de la tercera edad (70+ años) y jubilados (`retired`), así como estudiantes, tienen proporciones de aceptación mucho más altas[cite: 13, 14]. **Acción:** Redirigir el esfuerzo de llamadas masivas hacia nichos específicos como jubilados que buscan seguridad financiera.
+                   Los datos demuestran que el banco gasta muchos recursos llamando a trabajadores manuales (`blue-collar`), quienes tienen un volumen alto de rechazo. Por otro lado, las personas de la tercera edad (70+ años) y jubilados (`retired`), así como estudiantes, tienen proporciones de aceptación mucho más altas. **Acción:** Redirigir el esfuerzo de llamadas masivas hacia nichos específicos como jubilados que buscan seguridad financiera.
 
                 2. **Calidad de la Llamada sobre la Cantidad:**
-                   La enorme dispersión en la duración de la llamada (hasta 4918 segundos) indica que las interacciones exitosas requieren retener al usuario[cite: 10]. **Acción:** Capacitar a los asesores para no forzar cierres rápidos en el primer minuto, sino entablar una conversación consultiva, ya que una mayor duración está ligada al éxito.
+                   La enorme dispersión en la duración de la llamada (hasta 4918 segundos) indica que las interacciones exitosas requieren retener al usuario. **Acción:** Capacitar a los asesores para no forzar cierres rápidos en el primer minuto, sino entablar una conversación consultiva, ya que una mayor duración está ligada al éxito.
 
                 3. **Impacto del Entorno Macroeconómico:**
-                   La altísima correlación entre el Euribor, las tasas de variación de empleo y los índices de precios (>0.90) confirma que el cliente reacciona en bloque al contexto económico[cite: 15]. **Acción:** Adaptar el discurso de venta dinámicamente; si el Euribor está a la baja, el depósito a plazo debe venderse como un "refugio preventivo" antes de que las tasas caigan más.
+                   La altísima correlación entre el Euribor, las tasas de variación de empleo y los índices de precios (>0.90) confirma que el cliente reacciona en bloque al contexto económico. **Acción:** Adaptar el discurso de venta dinámicamente; si el Euribor está a la baja, el depósito a plazo debe venderse como un "refugio preventivo" antes de que las tasas caigan más.
 
                 4. **El Desafío de la Edad Central:**
-                   El grueso de las llamadas (la gran masa entre 30 y 40 años) coincide con la base laboral activa (`admin.`, `technician`)[cite: 11, 12]. Aunque aportan en volumen absoluto, su tasa de conversión está estancada. **Acción:** Para este grupo, el producto clásico de depósito no es atractivo. Se deben diseñar campañas cruzadas ofreciendo flexibilidades o tasas diferenciadas para recuperar el porcentaje perdido en este segmento poblacional.
+                   El grueso de las llamadas (la gran masa entre 30 y 40 años) coincide con la base laboral activa (`admin.`, `technician`). Aunque aportan en volumen absoluto, su tasa de conversión está estancada. **Acción:** Para este grupo, el producto clásico de depósito no es atractivo. Se deben diseñar campañas cruzadas ofreciendo flexibilidades o tasas diferenciadas para recuperar el porcentaje perdido en este segmento poblacional.
                 """)
 
         except Exception as e:
