@@ -206,12 +206,13 @@ elif menu == "📊 Análisis Exploratorio (EDA)":
             nulls = analyzer.get_missing_values()
             
             col1, col2 = st.columns(2)
-        with col1:
-                        st.write("**Conteo de Nulos por Columna:**")
-                        if nulls.sum() > 0:
-                            st.dataframe(nulls[nulls > 0])
-                        else:
-                            st.success("No se encontraron valores nulos.")
+            
+            with col1:
+                st.write("**Conteo de Nulos por Columna:**")
+                if nulls.sum() > 0:
+                    st.dataframe(nulls[nulls > 0])
+                else:
+                    st.success("No se encontraron valores nulos.")
             
             with col2:
                 if nulls.sum() > 0:
@@ -219,7 +220,7 @@ elif menu == "📊 Análisis Exploratorio (EDA)":
                     sns.heatmap(df.isnull(), cbar=False, cmap='viridis', ax=ax)
                     st.pyplot(fig)
                 else:
-                    st.success("El dataset está limpio, no requiere imputación de datos nulos en primera instancia. *Nota: En algunos datasets bancarios, los faltantes están marcados como 'unknown'.*")
+                    st.success("El dataset está limpio, no requiere imputación de datos nulos en primera instancia.")
 
         # Ítem 5: Distribución de variables numéricas
         with tab5:
