@@ -206,12 +206,12 @@ elif menu == "📊 Análisis Exploratorio (EDA)":
             nulls = analyzer.get_missing_values()
             
             col1, col2 = st.columns(2)
-with col1:
-                st.write("**Conteo de Nulos por Columna:**")
-                if nulls.sum() > 0:
-                    st.dataframe(nulls[nulls > 0])
-                else:
-                    st.success("No se encontraron valores nulos.")
+        with col1:
+                        st.write("**Conteo de Nulos por Columna:**")
+                        if nulls.sum() > 0:
+                            st.dataframe(nulls[nulls > 0])
+                        else:
+                            st.success("No se encontraron valores nulos.")
             
             with col2:
                 if nulls.sum() > 0:
