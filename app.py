@@ -68,15 +68,50 @@ st.set_page_config(page_title="EDA - Bank Marketing", layout="wide", page_icon="
 # ==========================================
 st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2830/2830284.png", width=100)
 st.sidebar.title("Navegación")
+
+# Solo dos módulos en el menú lateral
 menu = st.sidebar.radio("Seleccione un Módulo:", 
-                        ["📂 Carga y Análisis (EDA)", 
-                         "📝 Conclusiones Finales"])
+                        ["🏠 Home", 
+                         "📂 Carga y Análisis (EDA)"])
 
 # ==========================================
-# MÓDULO 1: CARGA DEL DATASET Y EDA
+# MÓDULO 1: HOME
 # ==========================================
-if menu == "📂 Carga y Análisis (EDA)":
+if menu == "🏠 Home":
     st.title("🏦 Proyecto Aplicado: Bank Marketing EDA")
+    st.markdown("---")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("Objetivo del Análisis")
+        st.write("""
+        El objetivo principal de este proyecto es realizar un Análisis Exploratorio de Datos (EDA)
+        interactivo para comprender los factores demográficos y financieros que influyen en que 
+        un cliente acepte o rechace una campaña de marketing de depósitos a plazo.
+        """)
+        st.subheader("El Problema")
+        st.write("""
+        Durante los últimos 6 meses, la efectividad de las campañas comerciales del banco cayó de 12% a 8%. 
+        A través de este análisis buscaremos descubrir relaciones y comportamientos relevantes para revertir esta tendencia.
+        """)
+        
+    with col2:
+        st.subheader("Datos del Autor")
+        st.write("**👤 Nombre:** JUAN DIEGO FARRO TAZA")
+        st.write("**📚 Curso:** Especialización en Python for Analytics")
+        st.write("**📅 Año:** 2026")
+        
+        st.subheader("Tecnologías Utilizadas")
+        st.write("- Python 🐍")
+        st.write("- Pandas y NumPy 🐼")
+        st.write("- Matplotlib y Seaborn 📊")
+        st.write("- Streamlit 🚀")
+
+# ==========================================
+# MÓDULO 2: CARGA DEL DATASET Y EDA INTEGRADO
+# ==========================================
+elif menu == "📂 Carga y Análisis (EDA)":
+    st.title("📂 Carga de Datos y EDA")
     st.write("Sube el archivo `BankMarketing.csv` para desplegar automáticamente el Análisis Exploratorio.")
     
     uploaded_file = st.file_uploader("Selecciona el archivo CSV", type=["csv"])
@@ -101,11 +136,11 @@ if menu == "📂 Carga y Análisis (EDA)":
             # Instanciar clase POO
             analyzer = DataAnalyzer(df)
             
-            # Uso de TABS según requerimientos
-            tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs([
+            # Uso de TABS: Agregamos la pestaña 11 para las conclusiones
+            tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10, tab11 = st.tabs([
                 "1. Info", "2. Clasificación", "3. Estadísticas", "4. Nulos", 
                 "5. Dist. Numéricas", "6. Dist. Categóricas", "7. Bivariado (Num vs Cat)", 
-                "8. Bivariado (Cat vs Cat)", "9. Filtros Dinámicos", "10. Hallazgos"
+                "8. Bivariado (Cat vs Cat)", "9. Filtros Dinámicos", "10. Hallazgos", "11. Conclusiones"
             ])
 
             # Ítem 1: Información general
@@ -151,16 +186,13 @@ if menu == "📂 Carga y Análisis (EDA)":
             with tab4:
                 st.header("Ítem 4: Análisis de Valores Faltantes")
                 nulls = analyzer.get_missing_values()
-                
                 col1, col2 = st.columns(2)
-                
                 with col1:
                     st.write("**Conteo de Nulos por Columna:**")
                     if nulls.sum() > 0:
                         st.dataframe(nulls[nulls > 0])
                     else:
                         st.success("No se encontraron valores nulos.")
-                
                 with col2:
                     if nulls.sum() > 0:
                         fig, ax = plt.subplots()
@@ -174,7 +206,6 @@ if menu == "📂 Carga y Análisis (EDA)":
                 st.header("Ítem 5: Distribución Numérica")
                 num_sel = st.selectbox("Seleccione la variable numérica:", analyzer.num_cols, key="num_hist")
                 bins = st.slider("Número de Bins para el Histograma", min_value=10, max_value=100, value=30)
-                
                 if num_sel:
                     st.pyplot(analyzer.plot_histogram(num_sel, bins))
                     st.write(f"Interpretación: Observamos la concentración de los clientes respecto a su **{num_sel}**.")
@@ -183,7 +214,6 @@ if menu == "📂 Carga y Análisis (EDA)":
             with tab6:
                 st.header("Ítem 6: Análisis de Variables Categóricas")
                 cat_sel = st.selectbox("Seleccione la variable categórica:", analyzer.cat_cols, key="cat_bar")
-                
                 if cat_sel:
                     st.pyplot(analyzer.plot_bar(cat_sel))
                     proporciones = df[cat_sel].value_counts(normalize=True) * 100
@@ -195,7 +225,6 @@ if menu == "📂 Carga y Análisis (EDA)":
                 st.header("Ítem 7: Numérico vs Categórico")
                 col_num = st.selectbox("Eje Y (Numérica):", analyzer.num_cols, index=analyzer.num_cols.index('age') if 'age' in analyzer.num_cols else 0)
                 col_cat = st.selectbox("Eje X (Categórica - ej. Target 'y'):", analyzer.cat_cols, index=analyzer.cat_cols.index('y') if 'y' in analyzer.cat_cols else 0)
-                
                 st.pyplot(analyzer.plot_bivariate_num_cat(col_num, col_cat))
                 st.write(f"Evalúa cómo varía la distribución de **{col_num}** dependiendo de la categoría en **{col_cat}**.")
 
@@ -204,14 +233,12 @@ if menu == "📂 Carga y Análisis (EDA)":
                 st.header("Ítem 8: Categórico vs Categórico")
                 cat_1 = st.selectbox("Variable Principal (Eje X):", analyzer.cat_cols, index=analyzer.cat_cols.index('job') if 'job' in analyzer.cat_cols else 0)
                 cat_2 = st.selectbox("Variable de Agrupación (Color - ej. 'y'):", analyzer.cat_cols, index=analyzer.cat_cols.index('y') if 'y' in analyzer.cat_cols else 0)
-                
                 st.pyplot(analyzer.plot_bivariate_cat_cat(cat_1, cat_2))
 
             # Ítem 9: Análisis dinámico / Filtros
             with tab9:
                 st.header("Ítem 9: Análisis Dinámico Basado en Parámetros")
                 st.write("Usa los widgets para filtrar y visualizar el dataset dinámicamente.")
-                
                 selected_cols = st.multiselect("Seleccione las columnas a visualizar:", df.columns.tolist(), default=['age', 'job', 'marital', 'y'])
                 
                 if 'age' in df.columns:
@@ -234,11 +261,9 @@ if menu == "📂 Carga y Análisis (EDA)":
             with tab10:
                 st.header("Ítem 10: Hallazgos Clave")
                 st.write("Visualización Resumen - Matriz de Correlación")
-                
                 fig, ax = plt.subplots(figsize=(10, 6))
                 sns.heatmap(df[analyzer.num_cols].corr(), annot=True, cmap='coolwarm', fmt=".2f", ax=ax)
                 st.pyplot(fig)
-                
                 st.markdown("""
                 ### 💡 Insights Principales:
                 1. **Impacto de la Duración**: La variable `duration` suele tener la mayor correlación con el éxito de la campaña. Sin embargo, no es un buen predictor para modelos futuros porque solo se conoce al finalizar la llamada.
@@ -246,34 +271,30 @@ if menu == "📂 Carga y Análisis (EDA)":
                 3. **Perfil Demográfico**: Ciertos trabajos (ej. jubilados o estudiantes) pueden mostrar tasas de aceptación proporcionalmente mayores.
                 """)
 
+            # Ítem 11: Conclusiones (Nueva Pestaña)
+            with tab11:
+                st.header("Ítem 11: Conclusiones para la Toma de Decisiones")
+                st.markdown("""
+                En base al Análisis Exploratorio de Datos realizado sobre la caída de efectividad de las campañas comerciales (del 12% al 8%), se extraen las siguientes **5 conclusiones orientadas al negocio**:
+
+                1. **Redirección de Esfuerzos por Perfil (Targeting):** 
+                   Se observa que grupos poblacionales específicos (por ejemplo, personas en etapa de jubilación o con ciertos perfiles profesionales) tienen una tasa de conversión superior. El equipo de ventas debe priorizar estas bolsas de clientes en lugar de realizar llamadas masivas aleatorias.
+                   
+                2. **Optimización del Canal y Tiempo de Contacto:** 
+                   Los datos sugieren que meses específicos o días de la semana rinden mejor. Se debe reprogramar el calendario de los agentes comerciales para intensificar los contactos durante los picos históricos de mayor aceptación y reducir esfuerzo en meses de baja conversión.
+                   
+                3. **La Duración del Contacto como Indicador de Calidad:** 
+                   Las llamadas exitosas muestran una duración media sustancialmente mayor. Se debe capacitar a los ejecutivos comerciales en habilidades blandas y "rompehielos" que logren retener al cliente en la línea los primeros 60 segundos vitales, en lugar de intentar forzar un cierre rápido.
+                   
+                4. **Adaptación a las Condiciones Macroeconómicas:** 
+                   Variables como la tasa de empleo o el índice de precios muestran una influencia clara. El banco debe ajustar su guion de ventas (pitch comercial) de los productos a plazo fijo, destacándolos como un "refugio seguro" ante momentos de alta incertidumbre económica.
+                   
+                5. **Control de la Frecuencia (Fatiga del Cliente):** 
+                   La variable de contactos durante la misma campaña (`campaign`) indica que insistir repetidas veces a un mismo cliente genera rendimientos decrecientes y potencial rechazo. Se debe establecer una política estricta de máximo de contactos por campaña para evitar la fatiga del cliente y optimizar el tiempo del agente comercial.
+                """)
+                st.info("📌 **Nota:** Este dashboard fue diseñado aplicando principios de limpieza visual, modularidad (POO) y componentes dinámicos requeridos para el portafolio profesional.")
+
         except Exception as e:
             st.error(f"Error al procesar el archivo: {e}")
     else:
         st.info("👆 Esperando la carga del archivo CSV para desplegar el análisis estadístico.")
-
-# ==========================================
-# MÓDULO 2: CONCLUSIONES FINALES
-# ==========================================
-elif menu == "📝 Conclusiones Finales":
-    st.title("📝 Conclusiones para la Toma de Decisiones")
-    
-    st.markdown("""
-    En base al Análisis Exploratorio de Datos realizado sobre la caída de efectividad de las campañas comerciales (del 12% al 8%), se extraen las siguientes **5 conclusiones orientadas al negocio**:
-
-    1. **Redirección de Esfuerzos por Perfil (Targeting):** 
-       Se observa que grupos poblacionales específicos (por ejemplo, personas en etapa de jubilación o con ciertos perfiles profesionales) tienen una tasa de conversión superior. El equipo de ventas debe priorizar estas bolsas de clientes en lugar de realizar llamadas masivas aleatorias.
-       
-    2. **Optimización del Canal y Tiempo de Contacto:** 
-       Los datos sugieren que meses específicos o días de la semana rinden mejor. Se debe reprogramar el calendario de los agentes comerciales para intensificar los contactos durante los picos históricos de mayor aceptación y reducir esfuerzo en meses de baja conversión.
-       
-    3. **La Duración del Contacto como Indicador de Calidad:** 
-       Las llamadas exitosas muestran una duración media sustancialmente mayor. Se debe capacitar a los ejecutivos comerciales en habilidades blandas y "rompehielos" que logren retener al cliente en la línea los primeros 60 segundos vitales, en lugar de intentar forzar un cierre rápido.
-       
-    4. **Adaptación a las Condiciones Macroeconómicas:** 
-       Variables como la tasa de empleo o el índice de precios muestran una influencia clara. El banco debe ajustar su guion de ventas (pitch comercial) de los productos a plazo fijo, destacándolos como un "refugio seguro" ante momentos de alta incertidumbre económica.
-       
-    5. **Control de la Frecuencia (Fatiga del Cliente):** 
-       La variable de contactos durante la misma campaña (`campaign`) indica que insistir repetidas veces a un mismo cliente genera rendimientos decrecientes y potencial rechazo. Se debe establecer una política estricta de máximo de contactos por campaña para evitar la fatiga del cliente y optimizar el tiempo del agente comercial.
-    """)
-    
-    st.info("📌 **Nota:** Este dashboard fue diseñado aplicando principios de limpieza visual, modularidad (POO) y componentes dinámicos requeridos para el portafolio profesional.")
