@@ -31,5 +31,5 @@ Para ejecutar esta aplicación en tu propia máquina, sigue estos pasos:
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone [https://github.com/juanfarro0801-oss/DMC62M2.git](https://github.com/juanfarro0801-oss/DMC62M2.git)
+   git clone https://github.com/juanfarro0801-oss/DMC62M2.git
    cd DMC62M2
