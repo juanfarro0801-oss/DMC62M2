@@ -14,11 +14,14 @@ El análisis busca comprender los factores demográficos, financieros y macroeco
 
 ## 📸 Capturas de la Aplicación
 
-![Pantalla Home](./ruta_a_tu_imagen_home.png)
+![Pantalla Home](Captura1.png)
 > *Vista general del Módulo 1: Contexto y objetivos del proyecto.*
 
-![Dashboard EDA](./ruta_a_tu_imagen_eda.png)
-> *Vista del Módulo 2: Análisis Exploratorio Integrado y visualizaciones bivariadas.*
+![Carga de Datos](Captura2.png)
+> *Vista del módulo de carga del dataset.*
+
+![Dashboard EDA Análisis](Captura3.png)
+> *Vista del Módulo 2: Análisis Exploratorio Integrado y visualizaciones.*
 
 ---
 
