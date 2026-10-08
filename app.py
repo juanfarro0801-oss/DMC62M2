@@ -4,9 +4,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import io
 
-# ==========================================
-# CLASE DE PROGRAMACIÓN ORIENTADA A OBJETOS
-# ==========================================
 class DataAnalyzer:
     """Clase para encapsular el análisis exploratorio de datos."""
     def __init__(self, df):
@@ -58,14 +55,13 @@ class DataAnalyzer:
         ax.set_title(f'{cat_col1} vs {cat_col2}')
         return fig
 
-# ==========================================
+
 # CONFIGURACIÓN DE LA PÁGINA
-# ==========================================
 st.set_page_config(page_title="EDA - Bank Marketing", layout="wide", page_icon="🏦")
 
-# ==========================================
+
 # SIDEBAR - NAVEGACIÓN MENÚ PRINCIPAL
-# ==========================================
+
 st.sidebar.image("https://cdn-icons-png.flaticon.com/512/2830/2830284.png", width=100)
 st.sidebar.title("Navegación")
 
@@ -73,9 +69,9 @@ menu = st.sidebar.radio("Seleccione un Módulo:",
                         ["🏠 Home", 
                          "📂 Carga y Análisis (EDA)"])
 
-# ==========================================
+
 # MÓDULO 1: HOME
-# ==========================================
+
 if menu == "🏠 Home":
     st.title("🏦 Proyecto Aplicado: Bank Marketing EDA")
     st.markdown("---")
@@ -88,10 +84,18 @@ if menu == "🏠 Home":
         interactivo para comprender los factores demográficos y financieros que influyen en que 
         un cliente acepte o rechace una campaña de marketing de depósitos a plazo.
         """)
+        
         st.subheader("El Problema")
         st.write("""
         Durante los últimos 6 meses, la efectividad de las campañas comerciales del banco cayó de 12% a 8%. 
         A través de este análisis buscaremos descubrir relaciones y comportamientos relevantes para revertir esta tendencia.
+        """)
+
+        st.subheader("Sobre el Dataset")
+        st.write("""
+        El archivo `BankMarketing.csv` contiene información de clientes contactados telefónicamente. 
+        Incluye variables demográficas (edad, estado civil, educación), financieras (créditos, mora), 
+        indicadores macroeconómicos (Euribor, IPC) y la variable objetivo `y` que indica si el cliente aceptó o no la campaña.
         """)
         
     with col2:
@@ -106,9 +110,8 @@ if menu == "🏠 Home":
         st.write("- Matplotlib y Seaborn 📊")
         st.write("- Streamlit 🚀")
 
-# ==========================================
+
 # MÓDULO 2: CARGA DEL DATASET Y EDA INTEGRADO
-# ==========================================
 elif menu == "📂 Carga y Análisis (EDA)":
     st.title("📂 Carga de Datos y EDA")
     st.write("Sube el archivo `BankMarketing.csv` para desplegar el Análisis Exploratorio.")
@@ -266,19 +269,22 @@ elif menu == "📂 Carga y Análisis (EDA)":
             with tab11:
                 st.header("Ítem 11: Conclusiones para la Toma de Decisiones")
                 st.markdown("""
-                Con base en las interpretaciones de los datos visualizados para abordar la caída de la efectividad comercial, se presentan las siguientes conclusiones estratégicas:
+                Con base en las interpretaciones de los datos visualizados para abordar la caída de la efectividad comercial, se presentan las siguientes **5 conclusiones estratégicas**:
 
                 1. **Micro-Segmentación Rentable (Targeting Demográfico):**
-                   Los datos demuestran que el banco gasta muchos recursos llamando a trabajadores manuales (`blue-collar`), quienes tienen un volumen alto de rechazo. Por otro lado, las personas de la tercera edad (70+ años) y jubilados (`retired`), así como estudiantes, tienen proporciones de aceptación mucho más altas. **Acción:** Redirigir el esfuerzo de llamadas masivas hacia nichos específicos como jubilados que buscan seguridad financiera.
+                   Los datos demuestran que el banco gasta muchos recursos llamando a trabajadores manuales (`blue-collar`), quienes tienen un volumen alto de rechazo. Por otro lado, las personas de la tercera edad (70+ años) y jubilados (`retired`), así como estudiantes, tienen proporciones de aceptación mucho más altas. **Acción:** Redirigir el esfuerzo de llamadas masivas hacia nichos específicos.
 
                 2. **Calidad de la Llamada sobre la Cantidad:**
-                   La enorme dispersión en la duración de la llamada (hasta 4918 segundos) indica que las interacciones exitosas requieren retener al usuario. **Acción:** Capacitar a los asesores para no forzar cierres rápidos en el primer minuto, sino entablar una conversación consultiva, ya que una mayor duración está ligada al éxito.
+                   La enorme dispersión en la duración de la llamada (hasta 4918 segundos) indica que las interacciones exitosas requieren retener al usuario. **Acción:** Capacitar a los asesores para no forzar cierres rápidos en el primer minuto, sino entablar una conversación consultiva.
 
                 3. **Impacto del Entorno Macroeconómico:**
-                   La altísima correlación entre el Euribor, las tasas de variación de empleo y los índices de precios (>0.90) confirma que el cliente reacciona en bloque al contexto económico. **Acción:** Adaptar el discurso de venta dinámicamente; si el Euribor está a la baja, el depósito a plazo debe venderse como un "refugio preventivo" antes de que las tasas caigan más.
+                   La altísima correlación entre el Euribor, las tasas de variación de empleo y los índices de precios (>0.90) confirma que el cliente reacciona en bloque al contexto económico. **Acción:** Adaptar el discurso de venta dinámicamente según el escenario de las tasas de interés.
 
                 4. **El Desafío de la Edad Central:**
-                   El grueso de las llamadas (la gran masa entre 30 y 40 años) coincide con la base laboral activa (`admin.`, `technician`). Aunque aportan en volumen absoluto, su tasa de conversión está estancada. **Acción:** Para este grupo, el producto clásico de depósito no es atractivo. Se deben diseñar campañas cruzadas ofreciendo flexibilidades o tasas diferenciadas para recuperar el porcentaje perdido en este segmento poblacional.
+                   El grueso de las llamadas (la gran masa entre 30 y 40 años) coincide con la base laboral activa (`admin.`, `technician`). Aunque aportan en volumen absoluto, su tasa de conversión está estancada. **Acción:** Diseñar campañas cruzadas ofreciendo flexibilidades o tasas diferenciadas para este segmento poblacional.
+                   
+                5. **Gestión del Historial de Contacto:**
+                   El dataset incluye variables sobre contactos previos. Agotar a un cliente con múltiples llamadas en una misma campaña (`campaign`) sin una estrategia previa genera fricción y caídas en la efectividad. **Acción:** Priorizar y asignar los mejores asesores a los leads que tuvieron un contacto previo exitoso (`poutcome`), ya que el costo de retención y conversión es estadísticamente menor que captar un cliente desde cero.
                 """)
 
         except Exception as e:
